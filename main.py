@@ -19,6 +19,7 @@ BLAGUE_API = os.getenv("BLAGUE_API")
 ARIVEE_CHANELL = os.getenv("ARIVEE_CHANELL")
 DEPART_CHANNEL = os.getenv("DEPART_CHANNEL")
 NOMBRE_WARN_BAN = os.getenv("NOMBRE_WARN_BAN")
+QUOI_FEUR= os.getenv("QUOI_FEUR")
 blagues = BlaguesAPI(BLAGUE_API)
 default_intents.members = True
 client = discord.Client(intents=default_intents)
@@ -342,11 +343,12 @@ async def on_message(message):
 
         
         # quoi feur / oui stiti
-        quoi_oui = [w for w in message.content.lower().split() if w]
-        if 'quoi' in quoi_oui:
-           await message.channel.send("feur")
-        if 'oui' in quoi_oui:
-           await message.channel.send("stiti")
+        if QUOI_FEUR == "on":
+            quoi_oui = [w for w in message.content.lower().split() if w]
+            if 'quoi' in quoi_oui:
+               await message.channel.send("feur")
+            if 'oui' in quoi_oui:
+               await message.channel.send("stiti")
 
     
         # commade !del supprime les derniers messages (!del [nombre de message a supprimer])
