@@ -20,6 +20,7 @@ ARIVEE_CHANELL = os.getenv("ARIVEE_CHANELL")
 DEPART_CHANNEL = os.getenv("DEPART_CHANNEL")
 NOMBRE_WARN_BAN = os.getenv("NOMBRE_WARN_BAN")
 QUOI_FEUR= os.getenv("QUOI_FEUR")
+STATUS_MESSAGE = os.getenv("STATUS_MESSAGE")
 blagues = BlaguesAPI(BLAGUE_API)
 default_intents.members = True
 client = discord.Client(intents=default_intents)
@@ -39,8 +40,10 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS "warn" ( "user_id"	INTEGER, "num_wa
 async def on_ready():
     print(f"Le bot est prêt et connécté en tant que {client.user} (id:{client.user.id}).")
     # apparance
-    game = discord.Game("se développer")
-    await client.change_presence(status=discord.Status.online, activity=game)
+    await client.change_presence(status=discord.Status.online, activity=None)
+    if not STATUS_MESSAGE == "None":
+        game = discord.Game(STATUS_MESSAGE)
+        await client.change_presence(status=discord.Status.online, activity=game)
 
 
 # arrivées / départs

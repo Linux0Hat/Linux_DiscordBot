@@ -22,7 +22,8 @@ ARIVEE_CHANELL=[l'id du salon ou vous souhaiter faire l'annonce des nouveau memb
 DEPART_CHANNEL=[l'id du salon ou vous souhaiter faire l'annonce des départs de membres.]
 BLAGUE_API=[token d'api de blague api. token gratuit : https://www.blagues-api.fr/]
 NOMBRE_WARN_BAN=[le nombre de warn avant le ban]
-QUOI_FEUR="on" si vous voulez activer le quoi feur ou le oui stiti, sinon indiquez "off" 
+QUOI_FEUR="on" si vous voulez activer le quoi feur ou le oui stiti, sinon indiquez "off"
+STATUS_MESSAGE=status a afficher (Joue à "message"). (Mettez "None" si vous ne souaitez pas de status)
 ```
 ## Lancer
 ```bash
