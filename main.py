@@ -57,9 +57,9 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     depart_channel: discord.TextChannel = client.get_channel(int(DEPART_CHANNEL))
-    embedVar=discord.Embed(title=f"{member} est partit du serveur. :sob:", description="", color=0xcc00ff)
+    embedVar=discord.Embed(title=f"{member} est parti du serveur. :sob:", description="", color=0xcc00ff)
     await depart_channel.send(embed=embedVar)
-    print(f"{member.display_name} est partit du serveur.")    
+    print(f"{member.display_name} est parti du serveur.")    
 
 
 # interaction textuel
@@ -81,13 +81,13 @@ async def on_message(message):
                     if cursor.fetchall():
                         cursor.execute("UPDATE warn SET num_warn = 0 WHERE user_id = ?",temp_value)
                     else:
-                        embedVar = discord.Embed(title=f":x: Cet utilisateur n'as pas encore été warn.", description='''''', color=0xff0000)
+                        embedVar = discord.Embed(title=f":x: Cet utilisateur n'a pas encore été warn.", description='''''', color=0xff0000)
                         await message.channel.send(embed=embedVar)
                     db.commit()
-                    embedVar = discord.Embed(title=f"Le membre {client.get_user(user)} as été clean-warn.", description='''''', color=0x00ff00)
+                    embedVar = discord.Embed(title=f"Le membre {client.get_user(user)} a été clean-warn.", description='''''', color=0x00ff00)
                     await message.channel.send(embed=embedVar)
                 except :
-                    embedVar = discord.Embed(title=f":x: Erreur de syntaxe", description='''Ecrit bien "!clean-warn [mention]" c;''', color=0xff0000)
+                    embedVar = discord.Embed(title=f":x: Erreur de syntaxe", description='''Ecris bien "!clean-warn [mention]" c;''', color=0xff0000)
                     await message.channel.send(embed=embedVar)
             else :
                 embedVar = discord.Embed(title=f":x: Tu n'as pas la permission de faire ça.", description="", color=0xff0000)
@@ -101,7 +101,7 @@ async def on_message(message):
                     user = int(message.content.split("!warn <@")[1].split(">")[0])
                     warn_user : discord.Member = message.channel.guild.get_member(user)
                     if warn_user == None :
-                        embedVar = discord.Embed(title=f":x: Erreur, cet utilisateur ne fait pas partit du serveur.", description='''''', color=0xff0000)
+                        embedVar = discord.Embed(title=f":x: Erreur, cet utilisateur ne fait pas parti du serveur.", description='''''', color=0xff0000)
                         await message.channel.send(embed=embedVar)
                         return
                     else :    
@@ -119,14 +119,14 @@ async def on_message(message):
                             cursor.execute("SELECT num_warn FROM warn WHERE user_id = ?",temp_value)
                             num_warn = (cursor.fetchall()[0])[0]
                             if num_warn >= int(NOMBRE_WARN_BAN):
-                                embedVar = discord.Embed(title=f"Le membre {client.get_user(user)} va deuvoir étre ban... Il a été warn {NOMBRE_WARN_BAN} fois...", description='''''', color=0xff0000)
+                                embedVar = discord.Embed(title=f"Le membre {client.get_user(user)} va devoir être ban... Il a été warn {NOMBRE_WARN_BAN} fois...", description='''''', color=0xff0000)
                                 await message.channel.send(embed=embedVar)
                                 await warn_user.ban(reason=f"{client.get_user(user)} a été warn {NOMBRE_WARN_BAN} fois")
                         else :
-                            embedVar = discord.Embed(title=f":x: Tu ne peux pas warn un administrateur c;", description="Bien essayer", color=0xff0000)
+                            embedVar = discord.Embed(title=f":x: Tu ne peux pas warn un administrateur c;", description="Bien essayé", color=0xff0000)
                             await message.channel.send(embed=embedVar) 
                 except :
-                    embedVar = discord.Embed(title=f":x: Erreur de syntaxe", description='''Ecrit bien "!warn [mention]" c;''', color=0xff0000)
+                    embedVar = discord.Embed(title=f":x: Erreur de syntaxe", description='''Ecris bien "!warn [mention]" c;''', color=0xff0000)
                     await message.channel.send(embed=embedVar)
             else :
                 embedVar = discord.Embed(title=f":x: Tu n'as pas la permission de faire ça.", description="", color=0xff0000)
@@ -175,13 +175,13 @@ async def on_message(message):
             cursor.execute("SELECT * FROM anniversaire WHERE user_id = ?",temp_value)
             rep = cursor.fetchall()[0]
             if rep:
-                embedVar = discord.Embed(title=f"{message.author}, votre date d'anniversaire a été enregistré en tant que {rep[1]}. Si tu souaite la changer fait !add-anniversaire.", description="", color=0xffff00)
+                embedVar = discord.Embed(title=f"{message.author}, Ta date d'anniversaire a été enregistrée en tant que {rep[1]}. Si tu souhaites la changer fais !add-anniversaire.", description="", color=0xffff00)
             else:
-                embedVar = discord.Embed(title=f"{message.author}, votre date d'anniversaire n'as pas été encore enregistré. Pour enregistrer votre date d'anniversaire fait !add-anniversaire.", description="", color=0xff0000)
+                embedVar = discord.Embed(title=f"{message.author}, Ta date d'anniversaire n'a pas été encore enregistrée. Pour enregistrer ta date d'anniversaire fais !add-anniversaire.", description="", color=0xff0000)
             await message.channel.send(embed=embedVar)
 
 
-        # commande qui renvoie les anniversairs d'aujourd'hui et le futurs anniversairs ou la date d'anniversaire d'un utilisateur
+        # commande qui renvoie les anniversairs d'aujourd'hui et les futurs anniversaires ou la date d'anniversaire d'un utilisateur
         if message.content.startswith("!anniversaire"):
             date = time.strftime("%d/%m/%Y")
             try :
@@ -189,7 +189,7 @@ async def on_message(message):
                 sql_enter = (get_user_anniv,)
                 cursor.execute("SELECT * FROM anniversaire WHERE user_id = ?", sql_enter)
                 rep = cursor.fetchall()
-                embedVar = discord.Embed(title=f":x: {client.get_user(int(get_user_anniv))} n'as pas encore enregistrer sa date d'anniversaire :disappointed:", description="", color=0xff0000)
+                embedVar = discord.Embed(title=f":x: {client.get_user(int(get_user_anniv))} n'a pas encore enregistré sa date d'anniversaire :disappointed:", description="", color=0xff0000)
                 if rep:
                    embedVar = discord.Embed(title=f''':cake: {client.get_user(int(get_user_anniv))} fête son anniversaire le {(rep[0])[1]}. Il/elle a actuellement {(int(date.split("/")[2])) - (int(((rep[0])[1]).split("/")[2]))} ans. :cake:''', description="", color=0xffff00)   
             except:
@@ -226,7 +226,7 @@ async def on_message(message):
                         if f'''{x[1].split("/")[0]}/{x[1].split("/")[1]}''' == f'''{e}/{i}''':
                             temp_value.append(x)
             if temp_value:
-                embedVar2 = discord.Embed(title="**:cake: Autres anniversaire a venir :**", description="", color=0xffff00)
+                embedVar2 = discord.Embed(title="**:cake: Autres anniversaires à venir :**", description="", color=0xffff00)
                 ii = 0
                 for i in temp_value:
                     ii = ii +1
@@ -254,21 +254,21 @@ async def on_message(message):
                         temp_value = (message.author.id, message.content)
                         cursor.execute("INSERT INTO anniversaire VALUES(?,?)",temp_value)
                     db.commit()
-                    embedVar= discord.Embed(title=f":white_check_mark: Ta date d'anniversaire a bien été changé pour le {message.content}.", description='''''', color=0x00ff00)
+                    embedVar= discord.Embed(title=f":white_check_mark: Ta date d'anniversaire a bien été changée pour le {message.content}.", description='''''', color=0x00ff00)
                     await message.channel.send(embed=embedVar)
                     anniv_wait_list.remove(message.author.id)
                 else:
                     embedVar = discord.Embed(title=f":x: Erreur de syntaxe", descripion='''''', color=0xff0000)
                     await message.channel.send(embed=embedVar)
             else:
-                embedVar= discord.Embed(title=f":white_check_mark: Ta demande a bien été annulé.", description='''''', color=0x00ff00)
+                embedVar= discord.Embed(title=f":white_check_mark: Ta demande a bien été annulée.", description='''''', color=0x00ff00)
                 await message.author.send(embed=embedVar)
                 anniv_wait_list.remove(message.author.id)
 
         if message.content.startswith("!add-anniversaire"):
-            embedVar= discord.Embed(title=f":white_check_mark: {message.author} nous t'avons envoyer un mp pour que tu puisse modifier ta date d'anniversaire.", description="", color=0xffff00)
+            embedVar= discord.Embed(title=f":white_check_mark: {message.author} nous t'avons envoyé un mp pour que tu puisse modifier ta date d'anniversaire.", description="", color=0xffff00)
             await message.reply(embed=embedVar)
-            embedVar= discord.Embed(title=f"CHANGER SA DATE D'ANNIVERSAIRE", description='''Pour changer ta date d'anniverssaire écrit ta date de naissance dans ce channel au format JJ/MM/AAAA. Ecrit "Annuler" si tu souaite annuler ce changement.''', color=0xffff00)
+            embedVar= discord.Embed(title=f"CHANGER SA DATE D'ANNIVERSAIRE", description='''Pour changer ta date d'anniversaire écrit ta date de naissance dans ce channel au format JJ/MM/AAAA. Ecris "Annuler" si tu souaites annuler ce changement.''', color=0xffff00)
             await message.author.send(embed=embedVar)
             anniv_wait_list.append(message.author.id)
 
@@ -364,7 +364,7 @@ async def on_message(message):
                 messages = await message.channel.history(limit=number+1).flatten()
                 for each_messages in messages:
                     await each_messages.delete()
-                embedVar = discord.Embed(title=f":white_check_mark: {number} messages on bien été supprimés.", description="", color=0x00ff00)
+                embedVar = discord.Embed(title=f":white_check_mark: {number} messages ont bien été supprimés.", description="", color=0x00ff00)
                 await message.channel.send(embed=embedVar)    
             else:
                 embedVar = discord.Embed(title=f":x: Tu n'as pas la permission de faire ça.", description="", color=0xff0000)
@@ -386,12 +386,12 @@ async def on_message(message):
         # !help renvoie la liste des commandes
         if message.content=="!help":
             embedVar = discord.Embed(title=f"Liste de commandes :", description="", color=0xcc00ff)
-            embedVar.add_field(name="!classement", value="Cette commande renvoie le top 10 des membre qui parles le plus sur le serveur.", inline=False)
+            embedVar.add_field(name="!classement", value="Cette commande renvoie le top 10 des membres qui parlent le plus sur le serveur.", inline=False)
             embedVar.add_field(name="!score [membre (mention)]", value="Cette commande renvoie le score personnel en segond argument.", inline=False)
             embedVar.add_field(name="!add-anniversaire", value="Cette commande permet d'ajouter ou de modifier sa date d'anniversaire", inline=False)
             embedVar.add_field(name="!anniversaire [membre (mention)]", value="Cette commande permet de s'informer sur les anniversairs des membres", inline=False)
-            embedVar.add_field(name="!info-anniversaire", value="Cette commande permet d'obtenir des info sur les données enregistré sur votre anniversaire", inline=False)
-            embedVar.add_field(name="!blague [type]", value="Cette commande permet d'obtenir des blague", inline=False)
+            embedVar.add_field(name="!info-anniversaire", value="Cette commande permet d'obtenir des infos sur les données enregistrées sur votre anniversaire", inline=False)
+            embedVar.add_field(name="!blague [type]", value="Cette commande permet d'obtenir des blagues", inline=False)
             await message.channel.send(embed=embedVar)
 
 
@@ -399,11 +399,11 @@ async def on_message(message):
         if message.content.startswith("!help-admin"):
             if message.author.permissions_in(message.channel).administrator :
                 embedVar = discord.Embed(title=f"Liste de commandes admin:", description="", color=0xcc00ff)
-                embedVar.add_field(name="!test", value="C'est une commande pour faire des tests (elle n'est pas toujour activé)",inline=False)
-                embedVar.add_field(name="!change-score [membre (mention)] [nouveau score du membre]", value="Cette commande change le score d'un membre (réservé aux administrateurs).", inline=False)
-                embedVar.add_field(name=f"!stop-bot", value="Cette commande stop le bot {client.user} (réservé aux administrateurs).", inline=False)
-                embedVar.add_field(name=f"!del [value]", value="Permet de supprimer les dernier messages.", inline=False)
-                embedVar.add_field(name=f"!warn [mention]", value=f"Permet de warn un utilisateur. ( si il est warn {NOMBRE_WARN_BAN} fois il sera ban ).", inline=False)
+                embedVar.add_field(name="!test", value="C'est une commande pour faire des tests (elle n'est pas toujours activée)",inline=False)
+                embedVar.add_field(name="!change-score [membre (mention)] [nouveau score du membre]", value="Cette commande change le score d'un membre.", inline=False)
+                embedVar.add_field(name=f"!stop-bot", value="Cette commande stoppe le bot {client.user} (réservé aux administrateurs).", inline=False)
+                embedVar.add_field(name=f"!del [value]", value="Permet de supprimer les derniers messages.", inline=False)
+                embedVar.add_field(name=f"!warn [mention]", value=f"Permet de warn un utilisateur (si il est warn {NOMBRE_WARN_BAN} fois il sera ban).", inline=False)
                 embedVar.add_field(name=f"!clean-warn [mention]", value="Permet de retirer les warns d'un utilisateur", inline=False)
                 await message.channel.send(embed=embedVar)
             else:
