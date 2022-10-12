@@ -531,6 +531,9 @@ class UserData():
     def change_score(user, value):
         cursor.execute(f"UPDATE classement SET nbr_msg = {value} WHERE user_id = {user}")
         db.commit()
+
+
+        
 # lancer le client avec token    
 default_intents = discord.Intents.default()
 default_intents.members = True
