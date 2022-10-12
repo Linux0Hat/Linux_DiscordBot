@@ -46,6 +46,7 @@ QUOI_FEUR= os.getenv("QUOI_FEUR")
 STATUS_MESSAGE = os.getenv("STATUS_MESSAGE")
 blagues = BlaguesAPI(BLAGUE_API)
 anniv_wait_list = []
+rm_data_wait_list = []
 bon_anniv_wait_list = []
 
 
@@ -190,22 +191,25 @@ class LinuxBotClient(discord.Client):
             if rep:
                embedVar = discord.Embed(title=f''':cake: {self.get_user(int(get_user_anniv))} fête son anniversaire le {(rep[0])[1]}. Il/elle a actuellement {(int(date.split("/")[2])) - (int(((rep[0])[1]).split("/")[2]))} ans. :cake:''', description="", color=0xffff00)   
         except:
-            try:
-                rep = UserData.get_anniv_table()
-                temp_value = []
-                embedVar = discord.Embed(title=f"Aujourd'hui personne ne fête son anniversaire. :disappointed:", description="", color=0xffff00)  
-                for i in rep:
-                    if f'''{i[1].split("/")[0]}/{i[1].split("/")[1]}''' == f'''{date.split("/")[0]}/{date.split("/")[1]}''':
-                        temp_value.append(i)
-                if temp_value:
-                    embedVar = discord.Embed(title=f":cake: Aujourd'hui, le {date} on fête l'anniversaire de :", description="", color=0xffff00) 
-                    for e in temp_value:
-                        embedVar.add_field(name=f"{self.get_user(int(e[0]))}", value=f'''Il a maintenant {(int(date.split("/")[2]))-(int(e[1].split("/")[2]))} ans''', inline=False)
-            except:
+            rep = UserData.get_anniv_table()
+            if rep == []:
                 embedVar = discord.Embed(title=f"Personne n'a enregistré son anniversaire. :disappointed:", description="", color=0xffff00)
                 await message.channel.send(embed=embedVar)
                 return
+            temp_value = []
+            embedVar = discord.Embed(title=f"Aujourd'hui personne ne fête son anniversaire. :disappointed:", description="", color=0xffff00)  
+            for i in rep:
+                if f'''{i[1].split("/")[0]}/{i[1].split("/")[1]}''' == f'''{date.split("/")[0]}/{date.split("/")[1]}''':
+                    temp_value.append(i)
+            if temp_value:
+                embedVar = discord.Embed(title=f":cake: Aujourd'hui, le {date} on fête l'anniversaire de :", description="", color=0xffff00) 
+                for e in temp_value:
+                    embedVar.add_field(name=f"{self.get_user(int(e[0]))}", value=f'''Il a maintenant {(int(date.split("/")[2]))-(int(e[1].split("/")[2]))} ans''', inline=False)
         rep = UserData.get_anniv_table()
+        if rep == []:
+            embedVar = discord.Embed(title=f"Personne n'a enregistré son anniversaire. :disappointed:", description="", color=0xffff00)
+            await message.channel.send(embed=embedVar)
+            return
         temp_value = []
         for y in range(int(date.split("/")[0])+1, 32):
             for x in rep :
@@ -399,6 +403,28 @@ class LinuxBotClient(discord.Client):
             embedVar = discord.Embed(title=f":x: Tu n'as pas la permission de faire ça.", description="", color=0xff0000)
             await message.channel.send(embed=embedVar)   
 
+    # cmd reset user data
+    async def cmd_rest_data(self, message):
+        if message.author.permissions_in(message.channel).administrator :
+            embed = discord.Embed(title=f"EST TU SUR DE VOULOIR SUPPRIMER LES DONNEES UTILISATEURS ? CETTE ACTION EST IRREVERSIBLE", description='''Envois "Oui" pour confirmer sinon répons "Annuler"''', color=0xff0000)
+            await message.author.send(embed=embed)
+            embed = discord.Embed(title=f"Nous t'avons envoyer un mp.", description="", color=0xff0000)
+            await message.reply(embed=embed)
+            rm_data_wait_list.append(message.author.id)
+        else :
+            embedVar = discord.Embed(title=f":x: Tu n'as pas la permission de faire ça.", description="", color=0xff0000)
+            await message.channel.send(embed=embedVar)
+
+    async def confirm_rm_data(self, message):
+        if message.content.startswith("Oui"):
+            os.remove("database.db")
+            UserData()
+            embedVar = discord.Embed(title=f"Données utilisateurs supprimées.", description="", color=0xff0000)
+            await message.channel.send(embed=embedVar)
+
+        elif message.content.startswith("Annuler"):
+            embedVar = discord.Embed(title=f"Demande annulée", description="", color=0x00ff00)
+            await message.channel.send(embed=embedVar)
 
     # interaction textuel
     async def on_message(self, message):
@@ -411,6 +437,9 @@ class LinuxBotClient(discord.Client):
             if message.author.id in anniv_wait_list and str(message.channel) == f"Direct Message with {message.author}":
                 await self.set_anniv(message)
     
+            elif message.author.id in rm_data_wait_list and str(message.channel) == f"Direct Message with {message.author}":
+                await self.confirm_rm_data(message)
+
             # commandes
             elif message.content.startswith("!blague") :
                 await self.cmd_blague(message)
@@ -452,6 +481,9 @@ class LinuxBotClient(discord.Client):
             elif message.content.startswith("!clean-warn"):
                 await self.cmd_clean_warn(message)
     
+            elif message.content == "!reset-data":
+                await self.cmd_rest_data(message)
+
             # other
             elif QUOI_FEUR == "on":
                 await self.quoi_feur(message)
@@ -534,9 +566,13 @@ class UserData():
 
 
         
-# lancer le client avec token    
-default_intents = discord.Intents.default()
-default_intents.members = True
-UserData()
-client = LinuxBotClient(intents=default_intents)       
-client.run(TOKEN)
+# lancer le client  
+def main(): 
+    default_intents = discord.Intents.default()
+    default_intents.members = True
+    UserData()
+    client = LinuxBotClient(intents=default_intents)           
+    client.run(TOKEN) 
+
+if __name__ == "__main__":
+    main()
